@@ -1,0 +1,68 @@
+.icon-item-champ {
+    text-align: center;
+    font-size: 30px;
+}
+
+.no-margin {
+    margin: 0 0;
+}
+
+.img-champion {
+    display:block;
+    margin-left: auto;
+    margin-right:auto;
+    width:20%;
+    height: auto;
+}
+
+.clubEmblemImage {
+    display:block; 
+    margin: 0 auto;
+    height:100px;
+    width: auto;
+}
+
+.imageClub {
+    height: 80px;
+    max-width:80px;
+    margin: 0 auto;
+    display: block;
+}
+
+
+#brandNavbar {
+    padding-left: 10px;
+    font-size: 20px;
+}
+
+#clubTeamPicture {
+    height: 80px;
+    max-width:80px;
+    margin: 0 auto;
+    display: block;
+}
+
+@media only screen and (max-width: 992px){
+    .img-champion {
+        width:50%;
+    }
+
+    #brandNavbar {
+        padding-left: 0;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .clubEmblemImage {
+        height: 64px;
+    }
+}
+
+@media only screen and (max-width: 500px){
+    #clubTeamPicture {
+        height: 60px;
+        max-width:60px;
+        margin: 0 auto;
+        display: block;
+    }
+}

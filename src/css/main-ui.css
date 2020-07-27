@@ -1,0 +1,13 @@
+.onLeft {
+    float: left !important;
+}
+
+.onRight {
+    float: right !important;
+}
+@media only screen and (max-width: 500px) {
+    .onRight {
+        float: left !important;
+        margin-top: 10px;
+    }
+}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="msapplication-starturl" content="/">
+        <meta name="theme-color" content="#212121"/>
+        <meta name="description" content="Football match and teams"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Football</title>
+        <link rel="manifest" href="/manifest/manifest.json">
+        <link rel='icon' type="image/png" href="/images/icons/icon-72x72.png">
+        <link rel="apple-touch-icon" href="/images/icons/icon-72x72.png">
+    </head>
+    <body>
+        <main-activity></main-activity>
+      <!-- for handling service-worker -->
+      <script>
+        function _requestPermission() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(function (result) {
+                    if (result === "denied") {
+                        console.error("PushNotif: Permission has been disallowed by user to show the push notification :(");
+                        return;
+                    } else if (result === "default") {
+                        console.error("PushNotif: User cancel selecting permission, reload browser if you want to allow :)");
+                        return;
+                    }
+
+                    _checkPushManager();
+                });
+            }
+        }
+        
+        function _urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding)
+                .replace(/-/g, '+')
+                .replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+
+        function _checkPushManager() {
+            if (('PushManager' in window)) {
+                navigator.serviceWorker.getRegistration().then(function (registration) {
+                    registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: _urlBase64ToUint8Array("BGk4pl6GF0j0WufDyl8jksSxFMow8JwvqxiwhrgMcTRkhr1MZbClZdIw5Pb4VuXrp-WblZowvCx5r800-5enkn0")
+                    }).then(function (subscribe) {
+                        console.log("PushNotif: Done subscribing with endpoint => ", subscribe.endpoint);
+                        console.log(
+                            "PushNotif: Done subscribing with p256dh key => ", 
+                            btoa(
+                                String.fromCharCode.apply(
+                                    null, 
+                                    new Uint8Array(subscribe.getKey('p256dh'))        
+                                )
+                            )
+                        );
+                        console.log(
+                            "PushNotif: Done subscribing with authKey => ", 
+                            btoa(
+                                String.fromCharCode.apply(
+                                    null, 
+                                    new Uint8Array(subscribe.getKey('auth'))
+                                )
+                            )
+                        );
+                    }).catch(function (e) {
+                        console.error("PushNotif: Cannot subscribing => ", e.message);
+                    });
+                });
+            } else {
+                console.error("PushNotif: Your browser doesn't support PushNotification :(");
+            }
+        }
+        
+        if("serviceWorker" in navigator){
+            window.addEventListener("load", function() {
+                navigator.serviceWorker
+                    .register("/service-worker.js")
+                    .then(_ => console.log("ServiceWorker: Registration almostly done!"))
+                    .catch(_ => console.error("ServiceWorker: Failed to registrate"));
+                _requestPermission();
+            });
+        } else {
+            console.log("ServiceWorker: Browser not supported!");
+        }
+      </script>
+    </body>
+</html>
